@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  web:
+    environment:
+      REDIS_URL: redis://redis
+      #DJANGO_MANAGEPY_MIGRATE: on
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    #links:
+    #  - redis:redis
+    ports:
+      - "8000:8000"
