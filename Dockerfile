@@ -1,4 +1,5 @@
-FROM python:3.5-alpine
+FROM python:3.6-alpine
+#FROM lambci/lambda:build-python3.6
 
 # Copy in your requirements file
 ADD requirements.txt /requirements.txt
@@ -9,6 +10,7 @@ ADD requirements.txt /requirements.txt
 # Install build deps, then run `pip install`, then remove unneeded build deps all in a single step. Correct the path to your production requirements file, if needed.
 RUN set -ex \
     && apk add --no-cache --virtual .build-deps \
+            python-dev \
             gcc \
             make \
             libc-dev \
@@ -16,7 +18,12 @@ RUN set -ex \
             linux-headers \
             pcre-dev \
             postgresql-dev \
-    && LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install --no-cache-dir -r /requirements.txt" \
+    && LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install virtualenv uwsgi awscli" \
+    && virtualenv /var/venv  \
+    && source /var/venv/bin/activate \
+    && pip install -U pip zappa \
+    && pip install -r /requirements.txt \
+    && deactivate \
     && runDeps="$( \
             scanelf --needed --nobanner --recursive /usr/local \
                     | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
@@ -25,8 +32,9 @@ RUN set -ex \
                     | sort -u \
     )" \
     && apk add --virtual .python-rundeps $runDeps \
-    && apk del .build-deps
-
+    && apk del .build-deps 
+    
+    
 # Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
 RUN mkdir /code/
 WORKDIR /code/
@@ -44,5 +52,15 @@ ENV UWSGI_WSGI_FILE=project/root/wsgi.py UWSGI_HTTP=:8000 UWSGI_MASTER=1 UWSGI_W
 # Call collectstatic (customize the following line with the minimal environment variables needed for manage.py to run):
 #RUN DATABASE_URL=none /venv/bin/python project/manage.py collectstatic --noinput
 
+
+
+#RUN virtualenv /var/venv && \
+#    source /var/venv/bin/activate && \
+#    pip install -U pip zappa && \
+#    pip install -r /requirements.txt 
+#&& \
+#    deactivate
+
 # Start uWSGI
-CMD ["uwsgi", "--http-auto-chunked", "--http-keepalive"]
+#CMD ["uwsgi", "--http-auto-chunked", "--http-keepalive", "-H /var/venv"]
+CMD ["/var/venv/bin/uwsgi", "--http-auto-chunked", "--http-keepalive", "-H /var/venv"]

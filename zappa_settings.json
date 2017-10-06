@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "aws_region": "us-east-2",
+        "django_settings": "project.root.settings",
+        "profile_name": "default",
+        "project_name": "task",
+        "runtime": "python3.6",
+        "s3_bucket": "jancic-zappa-test-dev"
+    }
+}

@@ -25,7 +25,7 @@ SECRET_KEY = '%@q2%8l%zc7az(bx8#1y!-p0e0^z_7)j*db+0r5hb7a&_#@flz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["testdocker-env.us-east-1.elasticbeanstalk.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.root.wsgi.application'
+WSGI_APPLICATION = 'root.wsgi.application'
 
 
 # Database
@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'project.root.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',
+        'USER': 'mydatabaseuser',
+        'PASSWORD': 'mypassword',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
