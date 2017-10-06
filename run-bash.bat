@@ -1,0 +1,1 @@
+docker-compose run -v c:/projects/base-site/project:/code web sh

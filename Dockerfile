@@ -15,7 +15,6 @@ ADD requirements.txt /requirements.txt
 RUN mkdir /code/
 WORKDIR /code/
 ADD ./project/ /code/
-ADD zappa_settings.json /code/
 
 ENV PS1 'zappa@$(pwd | sed "s@^/var/task/\?@@")\$ '
 
@@ -25,6 +24,8 @@ RUN virtualenv /var/venv && \
     source /var/venv/bin/activate && \
     pip install -U pip zappa && \
     pip install -r /requirements.txt 
+    
+USER root
     
 # uWSGI will listen on this port
 EXPOSE 8000

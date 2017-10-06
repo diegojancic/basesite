@@ -1,0 +1,38 @@
+FROM lambci/lambda:build-python3.6
+
+# Copy in your requirements file
+ADD requirements.txt /requirements.txt
+
+# OR, if you’re using a directory for your requirements, copy everything (comment out the above and uncomment this if so):
+# ADD requirements /requirements
+
+# Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
+RUN mkdir /code/
+WORKDIR /code/
+ADD . /code/
+
+# Add any custom, static environment variables needed by Django or your settings file here:
+ENV DJANGO_SETTINGS_MODULE=root.settings
+
+# Call collectstatic (customize the following line with the minimal environment variables needed for manage.py to run):
+#RUN DATABASE_URL=none /venv/bin/python project/manage.py collectstatic --noinput
+ENV PS1 'zappa@$(pwd | sed "s@^/var/task/\?@@")\$ '
+
+#RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install -r /requirements.txt"
+
+#RUN pip install -U pip zappa
+
+ADD zappa_settings.json /var/task/zappa_settings.json
+
+WORKDIR /var/task
+
+RUN virtualenv /var/venv && \
+    source /var/venv/bin/activate && \
+    pip install -U pip zappa && \
+    pip install -r /requirements.txt 
+#&& \
+#    deactivate
+
+EXPOSE 8000
+
+CMD ["bash"]
