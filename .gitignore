@@ -102,3 +102,4 @@ src/media/
 tmp/
 src/.idea/
 src/db.sqlite3
+.idea/

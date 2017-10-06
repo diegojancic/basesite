@@ -6,5 +6,4 @@ python-dateutil==2.6.1
 pytz==2017.2
 s3transfer==0.1.11
 Werkzeug==0.12.2
-uwsgi
 psycopg2
