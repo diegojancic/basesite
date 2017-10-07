@@ -11,9 +11,14 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from os.path import dirname, join, exists
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), )
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [join(BASE_DIR, 'static')]
+MEDIA_ROOT = join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # custom apps
+    'home'
 ]
 
 MIDDLEWARE = [
@@ -54,7 +62,7 @@ ROOT_URLCONF = 'root.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates').replace('\\','/'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
